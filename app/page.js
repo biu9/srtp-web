@@ -31,11 +31,16 @@ export default function Home() {
         console.log(trace);
         console.log(fingerprint);
         trace.length = 0; // clear the trace array
-        fetch('/api/test', {
+        fetch('/api/test',{
+          method: 'POST',
           headers: {
-            "content-type": "application/json",
+            'Content-Type': 'application/json'
           },
-        }).then(res => res.text()).then(data => console.log(data));
+          body: JSON.stringify({
+            fingerprint: fingerprint,
+            trace: trace
+          })
+        }).then(res => res.json()).then(res => console.log(res));
       }}
       variant="contained" color="primary">
         Hello World
