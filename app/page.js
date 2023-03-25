@@ -28,10 +28,9 @@ export default function Home() {
     className='home-bg'>
       <Button 
       onClick={() => {
-        console.log(trace);
-        console.log(fingerprint);
-        trace.length = 0; // clear the trace array
-        fetch('/api/test',{
+        //console.log(trace);
+        //console.log(fingerprint);
+        fetch('/api/verify',{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -40,7 +39,11 @@ export default function Home() {
             fingerprint: fingerprint,
             trace: trace
           })
-        }).then(res => res.json()).then(res => console.log(res));
+        }).then(res => res.json()).then(res => {
+          trace.length = 0;
+          console.log(res);
+          // alert(res.message);
+        });
       }}
       variant="contained" color="primary">
         Hello World
