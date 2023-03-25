@@ -1,7 +1,23 @@
 import { NextResponse } from 'next/server';
 const fs = require('fs');
+const exec = require('child_process').exec;
 
 const globalHash = {};
+
+const execCmd =  () => {
+ return new Promise((resolve,reject) => {
+    exec('python app/model/sample.py',(err,stdout,stderr) => {
+      if(err) {
+        resolve(false);
+      }
+      if(stdout.split('\n')[0][0] == 'p')
+        resolve(true);
+      else
+        resolve(false);
+    });
+  });
+}
+
 
 export async function GET(request,response) {
   return NextResponse.json({
@@ -27,7 +43,7 @@ export async function POST(request,response) {
     if(currTimeStamp - globalHash[res.fingerprint] < 1000) {
       // 当来自同一个用户的请求过于频繁时
       return NextResponse.json({
-        message:'too fast',
+        message:'request too fast',
         state:403
       });
     } else {
@@ -35,8 +51,19 @@ export async function POST(request,response) {
     }
   }
 
-  return NextResponse.json({
-    message:'pass',
-    state:200
-  });
+  if(await execCmd()) {
+    // 执行python文件,如果通过校验，返回pass
+    console.log('pass');
+    return NextResponse.json({
+      message:'pass',
+      state:200
+    });
+  } else {
+    // 执行python文件,如果未通过校验，返回fail
+    console.log('fail');
+    return NextResponse.json({
+      message:'fail',
+      state:403
+    });
+  }
 }
