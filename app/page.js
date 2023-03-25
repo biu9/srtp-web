@@ -42,7 +42,7 @@ export default function Home() {
         }).then(res => res.json()).then(res => {
           trace.length = 0;
           console.log(res);
-          // alert(res.message);
+          alert(res.message);
         });
       }}
       variant="contained" color="primary">
