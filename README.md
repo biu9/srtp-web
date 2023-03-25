@@ -2,6 +2,14 @@
 
 > 基于浏览器指纹以及鼠标轨迹识别的无感知验证码
 
+### 运行
+
+1. git clone
+2. npm install
+3. npm run dev
+
+![20230325203931](https://typora-1309407228.cos.ap-shanghai.myqcloud.com/20230325203931.png)
+
 ### 更新日志
 
 3.25
