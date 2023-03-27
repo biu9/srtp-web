@@ -61,9 +61,10 @@ export async function POST(request,response) {
     });
   } else {
     // 执行python文件,如果未通过校验，返回fail
+    // 
     console.log('fail');
     return NextResponse.json({
-      message:'fail',
+      message:'remain verify',
       state:403
     });
   }
