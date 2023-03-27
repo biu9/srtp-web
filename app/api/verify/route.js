@@ -4,9 +4,10 @@ const exec = require('child_process').exec;
 
 const globalHash = {};
 
-const execCmd =  () => {
+const execCmd =  (args) => {
  return new Promise((resolve,reject) => {
-    exec('python app/model/sample.py',(err,stdout,stderr) => {
+    exec('python app/model/sample.py '+args,(err,stdout,stderr) => {
+      console.log(stdout)
       if(err) {
         resolve(false);
       }
@@ -51,7 +52,7 @@ export async function POST(request,response) {
     }
   }
 
-  if(await execCmd()) {
+  if(await execCmd(res.trace)) {
     // 执行python文件,如果通过校验，返回pass
     console.log('pass');
     return NextResponse.json({
