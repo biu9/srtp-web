@@ -12,6 +12,9 @@ module.exports = {
     extend: {
       backgroundImage:{
         'github': "url('/static/github.png')",
+        'loading': "url('/static/loading.png')",
+        'pass': "url('/static/pass.png')",
+        'fail': "url('/static/fail.png')",
       }
     },
   },
