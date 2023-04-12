@@ -40,9 +40,27 @@ const ConfirmBox = ({ handleVerify,loading,pass,setLoading }) => {
   )
 }
 
-const VerifyModal = ({ ifOpen, setModalOpen }) => {
+const VerifyModal = ({ ifOpen, setModalOpen,fingerprint,trace }) => {
   const onClose = () => {
     setModalOpen(false)
+  }
+
+  const handleVerify = async () => {
+    fetch('api/verify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fingerprint,
+        trace
+      })
+    }).then(res => res.json()).then(res => {
+      console.log('verfiy',res)
+      alert(res.message)
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   return (
@@ -57,7 +75,10 @@ const VerifyModal = ({ ifOpen, setModalOpen }) => {
           onClick={onClose}>取消</Button>
           <Button 
           variant="text"
-          onClick={onClose}>确定</Button>
+          onClick={() => {
+            handleVerify()
+            onClose()
+          }}>确定</Button>
         </div>
       </div>
     </Modal>
@@ -95,17 +116,15 @@ export default function Home() {
       setTimeout(() => {
         setLoading(false)
       },1000)
-      res = await POST('/api/verify', {
-        fingerprint: fingerprint,
-        trace: trace,
+      res = await POST('/api/judgeBrowserEnv', {
+          test:'test data for judge browser environment'
       });
       trace.length = 0;
-      if(Math.random() > 0.5) {
-        //模拟pass
+      if(res.code === 200) {
         setPass(true)
-      } else {
+      } else if(res.code === 403) {
         setPass(false)
-        setModalOpen(true) // 进一步判断          
+        setModalOpen(true) // 进一步判断
       }
    } catch(err) {
       console.log(err)
@@ -117,12 +136,16 @@ export default function Home() {
       <VerifyModal 
         ifOpen={modalOpen}
         setModalOpen={setModalOpen}
+        fingerprint={fingerprint}
+        trace={trace}
       />
       <ConfirmBox
         handleVerify={handleVerify}
         loading={loading}
         pass={pass}
         setLoading={setLoading}
+        fingerprint={fingerprint}
+        trace={trace}
       />
     </div>
   )
