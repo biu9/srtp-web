@@ -8,7 +8,7 @@
 2. npm install
 3. npm run dev
 
-![20230325203931](https://typora-1309407228.cos.ap-shanghai.myqcloud.com/20230325203931.png)
+![20230412140709](https://typora-1309407228.cos.ap-shanghai.myqcloud.com/20230412140709.png)
 
 ### 更新日志
 
@@ -19,8 +19,14 @@
    1. 高频请求ban
    2. 执行本地python模型
 
+4.12
+1. 接上了后端python模型
+2. 美化了验证码样式
+
 ### TODO
 
 1. 自定义浏览器指纹
-2. 接入后端python模型
+2. ~~接入后端python模型~~
 3. 图片&语音验证码
+4. 根据浏览器环境判断访问风险
+5. 后端模型似乎还有一点问题(基本上都是fail)
