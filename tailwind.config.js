@@ -11,10 +11,10 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage:{
-        'github': "url('/static/github.png')",
-        'loading': "url('/static/loading.png')",
-        'pass': "url('/static/pass.png')",
-        'fail': "url('/static/fail.png')",
+        'github': "url('/github.png')",
+        'loading': "url('/loading.png')",
+        'pass': "url('/pass.png')",
+        'fail': "url('/fail.png')",
       }
     },
   },
