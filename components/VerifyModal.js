@@ -1,30 +1,29 @@
 import Modal from '@mui/material/Modal'
-import { Button } from '@mui/material'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
+import pos from '/public/lib/pos/1.json'
 
-const VerifyModal = ({ ifOpen, setModalOpen,fingerprint,trace }) => {
+const VerifyModal = ({ ifOpen, setModalOpen }) => {
   const [clickPoints,setClickPoints] = useState([]);
+
+  useEffect(() => {
+    if(clickPoints.length === 4) {
+      handleVerify()
+    }
+  },[clickPoints])
 
   const onClose = () => {
     setModalOpen(false)
   }
 
   const handleVerify = async () => {
-    fetch('api/verify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        fingerprint,
-        trace
-      })
-    }).then(res => res.json()).then(res => {
-      console.log('verfiy',res)
-      alert(res.message)
-    }).catch(err => {
-      console.log(err)
-    })
+    let index = 0;
+   // 判断四个点是否与预设的点相近
+   for(const key in pos) {
+    if(Math.abs(pos[key].x - clickPoints[index++].x) > 10 || Math.abs(pos[key].y - clickPoints[index++].y) > 10) {
+      alert('验证失败')
+      return null;
+    }
+   }
   }
 
   /**
@@ -63,12 +62,14 @@ const VerifyModal = ({ ifOpen, setModalOpen,fingerprint,trace }) => {
       setClickPoints(newClickPoints)
       return null;
     }
-    setClickPoints([...clickPoints, res])
+    setClickPoints((clickPoints) => [...clickPoints, res])
   }
   
 
   return (
-    <Modal open={ifOpen}>
+    <Modal 
+    onClose={onClose}
+    open={ifOpen}>
       <div className="modal flex flex-col space-y-3">
         <div className='text-xl font-bold'>验证你的身份</div> 
         <div className='text-sm'> 按顺序点击你听到的词语 </div>
@@ -80,18 +81,6 @@ const VerifyModal = ({ ifOpen, setModalOpen,fingerprint,trace }) => {
           }
         </div>
         <audio src="/lib/wavs/1.mp3" controls></audio>
-        <div className='flex justify-between'>
-          <Button 
-          variant='outlined'
-          color='error'
-          onClick={onClose}>取消</Button>
-          <Button 
-          variant="text"
-          onClick={() => {
-            handleVerify()
-            onClose()
-          }}>确定</Button>
-        </div>
       </div>
     </Modal>
   )

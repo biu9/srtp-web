@@ -8,12 +8,12 @@ export async function POST(request,response) {
 
     if(Math.random() > 0.5) {
         return NextResponse.json({
-            message:'pass',
+            message:'browser environment capture pass',
             code:403
         });
     } else {
         return NextResponse.json({
-            message:'remain verify',
+            message:'browser environment capture remain verify',
             code:403
         });
     }

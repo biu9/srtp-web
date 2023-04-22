@@ -63,25 +63,32 @@ export default function Home() {
     getFingerprint()
   })
 
+  /**
+   * 判断浏览器环境 & 鼠标轨迹是否有风险
+   */
   const handleVerify = async () => {
-   let res;
-   try {
-      setTimeout(() => {
-        setLoading(false)
-      },1000)
-      res = await POST('/api/judgeBrowserEnv', {
-          test:'test data for judge browser environment'
-      });
-      trace.length = 0;
-      if(res.code === 200) {
-        setPass(true)
-      } else if(res.code === 403) {
-        setPass(false)
-        setModalOpen(true) // 进一步判断
+    Promise.all([
+      POST('/api/judgeBrowserEnv', {
+        test:'test data for judge browser environment'
+      }),
+      POST('/api/verify',{
+        fingerprint,
+        trace
+      })
+    ]).then(res => {
+      console.log('res',res)
+      for(let i=0;i<res.length;i++) {
+        if(res[i].code === 403) {
+          setModalOpen(true)
+          setPass(false)
+          return
+        }
       }
-   } catch(err) {
-      console.log(err)
-   }
+    }).finally(() => {
+        setLoading(false)
+    }).catch(err => {
+        console.log('err',err)
+    })
   }
 
   return (
@@ -89,16 +96,12 @@ export default function Home() {
       <VerifyModal 
         ifOpen={modalOpen}
         setModalOpen={setModalOpen}
-        fingerprint={fingerprint}
-        trace={trace}
       />
       <ConfirmBox
         handleVerify={handleVerify}
         loading={loading}
         pass={pass}
         setLoading={setLoading}
-        fingerprint={fingerprint}
-        trace={trace}
       />
     </div>
   )
