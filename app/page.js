@@ -39,10 +39,6 @@ const ConfirmBox = ({ handleVerify,loading,pass,setLoading }) => {
   )
 }
 
-/**
- * TODO
- * 1. 弹出modal时的闪屏问题
- */
 export default function Home() {
   const trace = []
   const [modalOpen, setModalOpen] = useState(false)
@@ -80,7 +76,6 @@ export default function Home() {
       for(let i=0;i<res.length;i++) {
         if(res[i].code === 403) {
           setModalOpen(true)
-          //setPass(false)
           return
         }
       }
