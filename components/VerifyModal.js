@@ -1,9 +1,61 @@
 import Modal from '@mui/material/Modal'
-import { useState,useEffect } from 'react'
-import pos from '/public/lib/pos/1.json'
+import { useState,useEffect,useReducer } from 'react'
+import imgCaptureAnswer from '/public/lib/pos/1.json'
 
-const VerifyModal = ({ ifOpen, setModalOpen }) => {
-  const [clickPoints,setClickPoints] = useState([]);
+const CLICK_POINT_RADIUS = 20; // 圆点直径
+const CLICK_POINT_THRESHOLD = 50; // 点击点的误差阈值
+
+const clickPointsReducer = (state,action) => {
+  switch(action.type) {
+    case 'ADD_CLICK_POINT':
+      return [
+        ...state,
+        {
+          x:action.payload.x,
+          y:action.payload.y,
+          id:action.payload.x
+        }
+      ];
+    case 'REMOVE_CLICK_POINT':
+      return state.filter(point => point.id !== action.payload.id);
+    default:
+      throw new Error(`unhandled action type: ${action.type}`)
+  }
+}
+
+const ClickPoint = ({ x,y,id,onClick }) => {
+  return (
+    <div
+      key={id}
+      style={{
+        position: 'absolute',
+        top: y - CLICK_POINT_RADIUS / 2,
+        left: x - CLICK_POINT_RADIUS / 2,
+        width: CLICK_POINT_RADIUS,
+        height: CLICK_POINT_RADIUS,
+        borderRadius: CLICK_POINT_RADIUS / 2,
+        backgroundColor: 'red',
+        cursor: 'pointer',
+      }}
+      onClick={onClick}
+    >
+    </div>
+  )
+}
+
+const handleClick = (event,dispatch) => {
+  const { clientX,clientY } = event;
+  const parentRect = event.target.getBoundingClientRect();
+  const res = {
+    x: clientX - parentRect.left,
+    y: clientY - parentRect.top,
+  };
+  // 添加点击点
+  dispatch({ type: 'ADD_CLICK_POINT', payload: res });
+}
+
+const VerifyModal = ({ ifOpen, setModalOpen,setPass }) => {
+  const [clickPoints,dispatch] = useReducer(clickPointsReducer,[]);
 
   useEffect(() => {
     if(clickPoints.length === 4) {
@@ -16,56 +68,27 @@ const VerifyModal = ({ ifOpen, setModalOpen }) => {
   }
 
   const handleVerify = async () => {
-    let index = 0;
+    const pos = imgCaptureAnswer.answer;
+    console.log('clickPoints',clickPoints)
+    console.log('pos',pos)
+    
    // 判断四个点是否与预设的点相近
-   for(const key in pos) {
-    if(Math.abs(pos[key].x - clickPoints[index++].x) > 10 || Math.abs(pos[key].y - clickPoints[index++].y) > 10) {
-      alert('验证失败')
-      return null;
+    for(let i=0;i<pos.length;i++) {
+      if(Math.abs(pos[i].x - clickPoints[i].x) > CLICK_POINT_THRESHOLD || Math.abs(pos[i].y - clickPoints[i].y) > CLICK_POINT_THRESHOLD) {
+        console.log('incorrect key',i)
+        console.log('x diff',Math.abs(pos[i].x - clickPoints[i].x))
+        console.log('y diff',Math.abs(pos[i].y - clickPoints[i].y))
+        alert('验证失败');
+        setPass(false);
+        onClose();
+        return null;
+      }
     }
-   }
-  }
-
-  /**
-   * TODO:
-   * 1. 点击之前的点删除之前的点
-   * 2. 点击顺序逻辑判断
-   * @param {MouseEvent} event 
-   * @returns {null} 
-   */
-  const handleClick = (event) => {
-    // 获取点击点的定位,向clickPoints数组中增加一项
-    const { clientX, clientY } = event
-    const parentRect = event.target.getBoundingClientRect()
-    const clickPonit = (
-      <div
-        className='w-4 h-4 bg-red-500 rounded-full absolute flex justify-center items-center text-sm p-3'
-        style={{
-          left: clientX - parentRect.left,
-          top: clientY - parentRect.top
-        }}
-      >
-        {clickPoints.length + 1}
-      </div>
-    )
-    const res = {
-      x: clientX - parentRect.left,
-      y: clientY - parentRect.top,
-      child:clickPonit
-    }
-
-    // 如果x和y已经在数组中，删除该项
-    const index = clickPoints.findIndex(item => Math.abs(item.x - res.x) < 10 && Math.abs(item.y - res.y) < 10)
-    if(index !== -1) {
-      const newClickPoints = [...clickPoints]
-      newClickPoints.splice(index,1)
-      setClickPoints(newClickPoints)
-      return null;
-    }
-    setClickPoints((clickPoints) => [...clickPoints, res])
+    alert('验证成功')
+    onClose();
+    setPass(true);
   }
   
-
   return (
     <Modal 
     onClose={onClose}
@@ -74,10 +97,30 @@ const VerifyModal = ({ ifOpen, setModalOpen }) => {
         <div className='text-xl font-bold'>验证你的身份</div> 
         <div className='text-sm'> 按顺序点击你听到的词语 </div>
         <div 
-        onClick={handleClick}
+        onClick={(e) => {
+          handleClick(e,dispatch)
+        }}
         style={{backgroundImage:`url(${'/lib/images/1.png'})`}} className='w-80 h-80 bg-contain relative'>
           {
-            clickPoints.map(item => item.child)
+            clickPoints.map(point => {
+              return (
+                <ClickPoint
+                  key={point.id}
+                  x = {point.x}
+                  y = {point.y}
+                  id = {point.id}
+                  onClick={(e) => {
+                    dispatch({
+                      type:'REMOVE_CLICK_POINT',
+                      payload:{
+                        id:point.id
+                      }
+                    })
+                    e.stopPropagation();
+                  }}
+                />
+              )
+            })
           }
         </div>
         <audio src="/lib/wavs/1.mp3" controls></audio>

@@ -80,7 +80,7 @@ export default function Home() {
       for(let i=0;i<res.length;i++) {
         if(res[i].code === 403) {
           setModalOpen(true)
-          setPass(false)
+          //setPass(false)
           return
         }
       }
@@ -96,6 +96,7 @@ export default function Home() {
       <VerifyModal 
         ifOpen={modalOpen}
         setModalOpen={setModalOpen}
+        setPass={setPass}
       />
       <ConfirmBox
         handleVerify={handleVerify}
