@@ -18,6 +18,8 @@ const clickPointsReducer = (state,action) => {
       ];
     case 'REMOVE_CLICK_POINT':
       return state.filter(point => point.id !== action.payload.id);
+    case 'REMOVE_ALL_CLICK_POINTS':
+      return [];
     default:
       throw new Error(`unhandled action type: ${action.type}`)
   }
@@ -81,12 +83,14 @@ const VerifyModal = ({ ifOpen, setModalOpen,setPass }) => {
         alert('验证失败');
         setPass(false);
         onClose();
+        dispatch({type:'REMOVE_ALL_CLICK_POINTS'})
         return null;
       }
     }
     alert('验证成功')
     onClose();
     setPass(true);
+    dispatch({type:'REMOVE_ALL_CLICK_POINTS'})
   }
   
   return (
