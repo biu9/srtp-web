@@ -1,6 +1,6 @@
 import Modal from '@mui/material/Modal'
 import { useState,useEffect,useReducer } from 'react'
-import imgCaptureAnswer from '/public/lib/pos/1.json'
+import imgcaptchaAnswer from '/public/lib/pos/1.json'
 
 const CLICK_POINT_RADIUS = 20; // 圆点直径
 const CLICK_POINT_THRESHOLD = 50; // 点击点的误差阈值
@@ -70,7 +70,7 @@ const VerifyModal = ({ ifOpen, setModalOpen,setPass }) => {
   }
 
   const handleVerify = async () => {
-    const pos = imgCaptureAnswer.answer;
+    const pos = imgcaptchaAnswer.answer;
     console.log('clickPoints',clickPoints)
     console.log('pos',pos)
     

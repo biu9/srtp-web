@@ -55,13 +55,13 @@ export async function POST(request,response) {
   if(await execCmd(res.trace)) {
     // 执行python文件,如果通过校验，返回pass
     return NextResponse.json({
-      message:'trace capture pass',
+      message:'trace captcha pass',
       state:200
     });
   } else {
     // 执行python文件,如果未通过校验，返回fail
     return NextResponse.json({
-      message:'trace capture remain verify',
+      message:'trace captcha remain verify',
       state:403
     });
   }

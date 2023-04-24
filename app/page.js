@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import './style.css'
 import { POST } from './requests'
 import VerifyModal from '@/components/VerifyModal'
+import { collectBrowserEnv } from '@/utils/collectBrowserEnv'
+
 
 const ConfirmBox = ({ handleVerify,loading,pass,setLoading }) => {
 
@@ -45,6 +47,7 @@ export default function Home() {
   const [fingerprint, setFingerprint] = useState(null)
   const [loading, setLoading] = useState(false)
   const [pass, setPass] = useState(null)
+  const [browserEnv, setBrowserEnv] = useState(null)
 
   const getTrace = (e) => {
     trace.push([e.clientX, e.clientY, e.timeStamp])
@@ -57,7 +60,8 @@ export default function Home() {
       setFingerprint(result.visitorId)
     }
     getFingerprint()
-  })
+    setBrowserEnv(collectBrowserEnv())
+  },[])
 
   /**
    * 判断浏览器环境 & 鼠标轨迹是否有风险
@@ -65,7 +69,8 @@ export default function Home() {
   const handleVerify = async () => {
     Promise.all([
       POST('/api/judgeBrowserEnv', {
-        test:'test data for judge browser environment'
+        test:'test data for judge browser environment',
+        browserEnv:browserEnv
       }),
       POST('/api/verify',{
         fingerprint,
