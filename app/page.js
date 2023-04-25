@@ -69,7 +69,6 @@ export default function Home() {
   const handleVerify = async () => {
     Promise.all([
       POST('/api/judgeBrowserEnv', {
-        test:'test data for judge browser environment',
         browserEnv:browserEnv
       }),
       POST('/api/verify',{
@@ -84,6 +83,7 @@ export default function Home() {
           return
         }
       }
+      setPass(true)
     }).finally(() => {
         setLoading(false)
     }).catch(err => {

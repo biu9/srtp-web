@@ -127,7 +127,7 @@ const VerifyModal = ({ ifOpen, setModalOpen,setPass }) => {
             })
           }
         </div>
-        <audio src="/lib/wavs/1.mp3" controls></audio>
+        <audio src="/lib/wavs/1.wav" controls></audio>
       </div>
     </Modal>
   )
