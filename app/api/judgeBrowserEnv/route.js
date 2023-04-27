@@ -1,25 +1,27 @@
 import { NextResponse } from 'next/server';
 import UAParser from 'ua-parser-js';
 
-const BROWSER_ENV_PASS = NextResponse.json({
-    message:'browser environment captcha pass',
-    code:200
-});
-
-const BROWSER_ENV_REMAIN_VERIFY = NextResponse.json({
-    message:'browser environment captcha remain verify',
-    code:403
-});
-
-const getUserAgent = (request) => {
-    const parser = new UAParser();
-    const userAgent = request.headers.get('user-agent');
-    const result = parser.setUA(userAgent).getResult();
-
-    return result;
-}
-
 export async function POST(request,response) {
+
+    const BROWSER_ENV_PASS = NextResponse.json({
+        message:'browser environment captcha pass',
+        code:200
+    });
+    
+    const BROWSER_ENV_REMAIN_VERIFY = NextResponse.json({
+        message:'browser environment captcha remain verify',
+        code:403
+    });
+    
+    const getUserAgent = (request) => {
+        const parser = new UAParser();
+        const userAgent = request.headers.get('user-agent');
+        const result = parser.setUA(userAgent).getResult();
+    
+        return result;
+    }
+
+    
     const res = await request.json();
     const userAgent = getUserAgent(request);
 
@@ -43,5 +45,6 @@ export async function POST(request,response) {
         return BROWSER_ENV_REMAIN_VERIFY;
     }
     
-    return BROWSER_ENV_PASS;
+    return BROWSER_ENV_PASS
+
 }

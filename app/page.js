@@ -5,6 +5,7 @@ import './style.css'
 import { POST } from './requests'
 import VerifyModal from '@/components/VerifyModal'
 import { collectBrowserEnv } from '@/utils/collectBrowserEnv'
+import { resolve } from 'styled-jsx/css'
 
 
 const ConfirmBox = ({ handleVerify,loading,pass,setLoading }) => {
@@ -76,7 +77,6 @@ export default function Home() {
         trace
       })
     ]).then(res => {
-      console.log('res',res)
       for(let i=0;i<res.length;i++) {
         if(res[i].code === 403) {
           setModalOpen(true)

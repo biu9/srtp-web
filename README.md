@@ -64,3 +64,5 @@
 3. 记得给每个element加key
 4. 使用useReducer代替useState
 5. 对于一些response可以考虑常量硬编码
+   1. 硬编码的时候注意作用域！！！
+   2. nextResponse声明在最顶层后，多次请求api会造成readable stream lock的错误，推测是由于每次请求返回的都是相同的nextResponse导致的

@@ -4,21 +4,6 @@ const exec = require('child_process').exec;
 
 const globalHash = {};
 
-const REQUEST_TOO_FASE = NextResponse.json({
-  message:'request too fast',
-  code:403
-});
-
-const TRACE_PASS = NextResponse.json({
-  message:'trace captcha pass',
-  code:200
-});
-
-const TRACE_REMAIN_VERIFY = NextResponse.json({
-  message:'trace captcha remain verify',
-  code:403
-});
-
 const execCmd =  (args) => {
  return new Promise((resolve,reject) => {
     exec('python app/model/sample.py '+args,(err,stdout,stderr) => {
@@ -42,6 +27,22 @@ export async function GET(request,response) {
 }
 
 export async function POST(request,response) {
+
+  const REQUEST_TOO_FASE = NextResponse.json({
+    message:'request too fast',
+    code:403
+  });
+  
+  const TRACE_PASS = NextResponse.json({
+    message:'trace captcha pass',
+    code:200
+  });
+  
+  const TRACE_REMAIN_VERIFY = NextResponse.json({
+    message:'trace captcha remain verify',
+    code:403
+  });
+
   const res = await request.json();
   const currTimeStamp = new Date().getTime();
 
