@@ -27,6 +27,22 @@ export async function GET(request,response) {
 }
 
 export async function POST(request,response) {
+
+  const REQUEST_TOO_FASE = NextResponse.json({
+    message:'request too fast',
+    code:403
+  });
+  
+  const TRACE_PASS = NextResponse.json({
+    message:'trace captcha pass',
+    code:200
+  });
+  
+  const TRACE_REMAIN_VERIFY = NextResponse.json({
+    message:'trace captcha remain verify',
+    code:403
+  });
+
   const res = await request.json();
   const currTimeStamp = new Date().getTime();
 
@@ -41,12 +57,10 @@ export async function POST(request,response) {
   if(!globalHash[res.fingerprint]) {
     globalHash[res.fingerprint] = currTimeStamp;
   } else {
-    if(currTimeStamp - globalHash[res.fingerprint] < 1000) {
+    if(currTimeStamp - globalHash[res.fingerprint] < 10000) {
       // 当来自同一个用户的请求过于频繁时
-      return NextResponse.json({
-        message:'request too fast',
-        state:403
-      });
+      globalHash[res.fingerprint] = currTimeStamp; // reset request timestamp
+      return REQUEST_TOO_FASE
     } else {
       globalHash[res.fingerprint] = currTimeStamp; // reset request timestamp
     }
@@ -54,17 +68,9 @@ export async function POST(request,response) {
 
   if(await execCmd(res.trace)) {
     // 执行python文件,如果通过校验，返回pass
-    console.log('pass');
-    return NextResponse.json({
-      message:'pass',
-      state:200
-    });
+    return TRACE_PASS
   } else {
     // 执行python文件,如果未通过校验，返回fail
-    console.log('fail');
-    return NextResponse.json({
-      message:'fail',
-      state:403
-    });
+    return TRACE_REMAIN_VERIFY
   }
 }
