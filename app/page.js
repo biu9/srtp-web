@@ -5,6 +5,7 @@ import './style.css'
 import { POST } from './requests'
 import { collectBrowserEnv } from '@/utils/collectBrowserEnv'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 const DynamicVerifyModal = dynamic(
   () => import('@/components/VerifyModal'),
@@ -52,6 +53,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [pass, setPass] = useState(null)
   const [browserEnv, setBrowserEnv] = useState(null)
+  const router = useRouter()
 
   const getTrace = (e) => {
     trace.push([e.clientX, e.clientY, e.timeStamp])
@@ -80,7 +82,13 @@ export default function Home() {
         trace
       })
     ]).then(res => {
+      console.log('res',res)
       for(let i=0;i<res.length;i++) {
+        if(res[i].code === 4031) {
+          console.log('forbidden')
+          router.push('/forbidden')
+          return
+        }
         if(res[i].code === 403) {
           setModalOpen(true)
           return

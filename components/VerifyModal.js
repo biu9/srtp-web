@@ -1,9 +1,11 @@
 import Modal from '@mui/material/Modal'
 import { useState, useEffect, useReducer } from 'react'
+import { useRouter } from 'next/navigation';
 
 const CLICK_POINT_RADIUS = 20; // 圆点直径
 const CLICK_POINT_THRESHOLD = 50; // 点击点的误差阈值
 const IMG_NUM = 8; // 图片数量
+const VERIFY_LIMIT = 30; // 最多验证次数
 
 const clickPointsReducer = (state, action) => {
   switch (action.type) {
@@ -63,7 +65,15 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
   const IMG_URL = `/lib/images/${randomIndex}.png`;
   const WAV_URL = `/lib/wavs/${randomIndex}.wav`;
 
+  const router = useRouter();
+
   useEffect(() => {
+    let verifyCount = localStorage.getItem('verifyCount') || localStorage.setItem('verifyCount', 0);
+    console.log('verifyCount', verifyCount)
+    if(verifyCount >= VERIFY_LIMIT) {
+      router.push('/forbidden');
+    }
+
     fetch(`/lib/pos/${randomIndex}.json`).then(res => res.json()).then(res => {
       setImgcaptchaAnswer(res);
       console.log('imgcaptchaAnswer', res)
@@ -93,6 +103,7 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
         console.log('incorrect key', i)
         console.log('x diff', Math.abs(pos[i].x - clickPoints[i].x))
         console.log('y diff', Math.abs(pos[i].y - clickPoints[i].y))
+        localStorage.setItem('verifyCount', parseInt(localStorage.getItem('verifyCount')) + 1);
         alert('验证失败');
         setPass(false);
         onClose();

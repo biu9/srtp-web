@@ -30,7 +30,7 @@ export async function POST(request,response) {
 
   const REQUEST_TOO_FASE = NextResponse.json({
     message:'request too fast',
-    code:403
+    code:4031
   });
   
   const TRACE_PASS = NextResponse.json({
