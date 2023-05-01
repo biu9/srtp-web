@@ -33,9 +33,6 @@ def judge_mouse_trace(trace, model):
     else: print('pass')
 
 
-# TODO: add the first judge here
-
-
 # load pretrained xgboost model
 loaded_model = pickle.load(open("./app/model/pima.pickle.dat", "rb"))
 # parse the trace and predict

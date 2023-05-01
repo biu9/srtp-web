@@ -25,6 +25,8 @@ export async function POST(request,response) {
     const res = await request.json();
     const userAgent = getUserAgent(request);
 
+    // return BROWSER_ENV_REMAIN_VERIFY;  // !: 只是为了测试后面的两道
+
     // 根据浏览器环境判断是否有风险
     
     // 1. 判断webgl下检测到的浏览器类型是否与use Agent一致
