@@ -1,7 +1,6 @@
 import Modal from '@mui/material/Modal'
 import { useState, useEffect, useReducer } from 'react'
 
-
 const CLICK_POINT_RADIUS = 20; // 圆点直径
 const CLICK_POINT_THRESHOLD = 50; // 点击点的误差阈值
 const IMG_NUM = 8; // 图片数量
@@ -60,14 +59,16 @@ const handleClick = (event, dispatch) => {
 const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
   const [clickPoints, dispatch] = useReducer(clickPointsReducer, []);
   const [imgcaptchaAnswer, setImgcaptchaAnswer] = useState(null);
-  const randomIndex = Math.floor(Math.random() * IMG_NUM);
+  const [randomIndex, setRandomIndex] = useState(1);
   const IMG_URL = `/lib/images/${randomIndex}.png`;
   const WAV_URL = `/lib/wavs/${randomIndex}.wav`;
 
   useEffect(() => {
     fetch(`/lib/pos/${randomIndex}.json`).then(res => res.json()).then(res => {
-      setImgcaptchaAnswer(res)
-    })
+      setImgcaptchaAnswer(res);
+      console.log('imgcaptchaAnswer', res)
+    });
+    setRandomIndex(Math.floor(Math.random() * IMG_NUM));
   }, [])
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
   }, [clickPoints])
 
   const onClose = () => {
+    dispatch({ type: 'REMOVE_ALL_CLICK_POINTS' })
     setModalOpen(false)
   }
 

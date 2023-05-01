@@ -3,10 +3,13 @@ import FingerprintJS, { load } from '@fingerprintjs/fingerprintjs'
 import { useState, useEffect } from 'react'
 import './style.css'
 import { POST } from './requests'
-import VerifyModal from '@/components/VerifyModal'
 import { collectBrowserEnv } from '@/utils/collectBrowserEnv'
-import { resolve } from 'styled-jsx/css'
+import dynamic from 'next/dynamic'
 
+const DynamicVerifyModal = dynamic(
+  () => import('@/components/VerifyModal'),
+  { ssr: false }
+)
 
 const ConfirmBox = ({ handleVerify,loading,pass,setLoading }) => {
 
@@ -93,7 +96,7 @@ export default function Home() {
 
   return (
     <div onMouseMove={(e) => getTrace(e)} className="home-bg">
-      <VerifyModal 
+      <DynamicVerifyModal 
         ifOpen={modalOpen}
         setModalOpen={setModalOpen}
         setPass={setPass}
