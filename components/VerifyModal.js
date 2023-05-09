@@ -1,6 +1,7 @@
 import Modal from '@mui/material/Modal'
 import { useState, useEffect, useReducer } from 'react'
 import { useRouter } from 'next/navigation';
+import { POST } from '@/app/requests';
 
 const CLICK_POINT_RADIUS = 20; // 圆点直径
 const CLICK_POINT_THRESHOLD = 50; // 点击点的误差阈值
@@ -79,7 +80,12 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
       console.log('imgcaptchaAnswer', res)
     });
     setRandomIndex(Math.floor(Math.random() * IMG_NUM));
-  }, [])
+
+    POST('/api/generateVoiceAndImage',{
+      filename:'test1'
+    })
+
+  }, [ifOpen])
 
   useEffect(() => {
     if (clickPoints.length === 4) {

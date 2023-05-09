@@ -104,11 +104,15 @@ export default function Home() {
 
   return (
     <div onMouseMove={(e) => getTrace(e)} className="home-bg">
-      <DynamicVerifyModal 
-        ifOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        setPass={setPass}
-      />
+      {
+        modalOpen &&       
+        <DynamicVerifyModal 
+          ifOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          setPass={setPass}
+        />
+      }
+
       <ConfirmBox
         handleVerify={handleVerify}
         loading={loading}

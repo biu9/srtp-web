@@ -57,7 +57,7 @@ export async function POST(request,response) {
   if(!globalHash[res.fingerprint]) {
     globalHash[res.fingerprint] = currTimeStamp;
   } else {
-    if(currTimeStamp - globalHash[res.fingerprint] < 10000) {
+    if(currTimeStamp - globalHash[res.fingerprint] < 100) {
       // 当来自同一个用户的请求过于频繁时
       globalHash[res.fingerprint] = currTimeStamp; // reset request timestamp
       return REQUEST_TOO_FASE
