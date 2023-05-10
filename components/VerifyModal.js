@@ -1,5 +1,5 @@
 import Modal from '@mui/material/Modal'
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect, useLayoutEffect, useReducer } from 'react'
 import { useRouter } from 'next/navigation';
 import { POST } from '@/app/requests';
 
@@ -62,29 +62,41 @@ const handleClick = (event, dispatch) => {
 const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
   const [clickPoints, dispatch] = useReducer(clickPointsReducer, []);
   const [imgcaptchaAnswer, setImgcaptchaAnswer] = useState(null);
-  const [randomIndex, setRandomIndex] = useState(1);
+  const [randomIndex, setRandomIndex] = useState(null);
   const IMG_URL = `/lib/images/${randomIndex}.png`;
   const WAV_URL = `/lib/wavs/${randomIndex}.wav`;
 
   const router = useRouter();
 
-  useEffect(() => {
-    let verifyCount = localStorage.getItem('verifyCount') || localStorage.setItem('verifyCount', 0);
-    console.log('verifyCount', verifyCount)
-    if(verifyCount >= VERIFY_LIMIT) {
-      router.push('/forbidden');
-    }
+  /**
+   * TODO
+   * 服务端动态生成图片 & 语音太慢了!
+   * 1. 考虑优化服务端生成程序
+   * 2. 前端进入页面就请求服务端,服务端同步开始生成
+   */
+  useLayoutEffect(() => {
+    (async() => {
+      let verifyCount = localStorage.getItem('verifyCount') || localStorage.setItem('verifyCount', 0);
+      console.log('verifyCount', verifyCount)
+      if(verifyCount >= VERIFY_LIMIT) {
+        router.push('/forbidden');
+      }
+  
+      await POST('/api/generateVoiceAndImage',{
+        filename:'test1'
+      }).then(res => res.json).then(res => {
+        console.log('res', res)
+      })
 
-    fetch(`/lib/pos/${randomIndex}.json`).then(res => res.json()).then(res => {
-      setImgcaptchaAnswer(res);
-      console.log('imgcaptchaAnswer', res)
-    });
-    setRandomIndex(Math.floor(Math.random() * IMG_NUM));
-
-    POST('/api/generateVoiceAndImage',{
-      filename:'test1'
-    })
-
+      console.log('post success')
+      setRandomIndex(Math.floor(Math.random() * IMG_NUM));
+      fetch(`/lib/pos/${randomIndex}.json`).then(res => res.json()).then(res => {
+        setImgcaptchaAnswer(res);
+        console.log('imgcaptchaAnswer', res)
+      });
+      
+  
+    })()
   }, [ifOpen])
 
   useEffect(() => {

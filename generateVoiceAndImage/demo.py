@@ -16,7 +16,7 @@ from model.utils import CaptchaUtils
 
 BACKGROUNDDIR = "./resources/bg/"
 
-OUTPUTDIR = "./output/"
+OUTPUTDIR = "../public/output/"
 CHAROUTPUTDIR = OUTPUTDIR + "char_output/"
 CHARBLURDIR = OUTPUTDIR + "char_blur/"
 OVERLAYOUTPUTDIR = OUTPUTDIR + "overlay_output/"
