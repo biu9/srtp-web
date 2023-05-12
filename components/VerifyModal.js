@@ -63,8 +63,10 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
   const [clickPoints, dispatch] = useReducer(clickPointsReducer, []);
   const [imgcaptchaAnswer, setImgcaptchaAnswer] = useState(null);
   const [randomIndex, setRandomIndex] = useState(null);
-  const IMG_URL = `/lib/images/${randomIndex}.png`;
-  const WAV_URL = `/lib/wavs/${randomIndex}.wav`;
+  //const IMG_URL = `/lib/images/${randomIndex}.png`;
+  //const WAV_URL = `/lib/wavs/${randomIndex}.wav`;
+  const IMG_URL = `/output/char_output/${randomIndex}.png`;
+  const WAV_URL = `/output/voice_output/${randomIndex}.wav`;
 
   const router = useRouter();
 
@@ -76,6 +78,7 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
    */
   useLayoutEffect(() => {
     (async() => {
+      const tmp = new Date().getTime();
       let verifyCount = localStorage.getItem('verifyCount') || localStorage.setItem('verifyCount', 0);
       console.log('verifyCount', verifyCount)
       if(verifyCount >= VERIFY_LIMIT) {
@@ -83,19 +86,15 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
       }
   
       await POST('/api/generateVoiceAndImage',{
-        filename:'test1'
-      }).then(res => res.json).then(res => {
-        console.log('res', res)
+        filename: tmp
       })
 
-      console.log('post success')
-      setRandomIndex(Math.floor(Math.random() * IMG_NUM));
-      fetch(`/lib/pos/${randomIndex}.json`).then(res => res.json()).then(res => {
+      setRandomIndex(tmp);
+
+      fetch(`/output/char_output/${tmp}.json`).then(res => res.json()).then(res => {
         setImgcaptchaAnswer(res);
         console.log('imgcaptchaAnswer', res)
       });
-      
-  
     })()
   }, [ifOpen])
 

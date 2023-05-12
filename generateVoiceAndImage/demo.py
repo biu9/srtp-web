@@ -7,6 +7,7 @@ import numpy
 import cv2
 import os
 import pyttsx3
+import TTS.tcloud_tts as tts
 
 from PIL import Image
 from PIL import ImageFilter
@@ -100,6 +101,7 @@ def main(id):
 
     print(captcha.text, captcha.num)
     
+    '''
     say = pyttsx3.init()
     msg = HEAD + ''.join(list(str(captcha.text))) + '。'
     
@@ -107,7 +109,13 @@ def main(id):
     say.say(msg)
     say.save_to_file(text=msg, filename=VOICEOUTPUTDIR + "%s.wav" % id)
     say.runAndWait()
+    '''
 
+    # 语音合成
+    msg = HEAD + ''.join(list(str(captcha.text))) + '。'
+
+    tts.task_process(msg,id)
+    
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     id = sys.argv[1] if len(sys.argv) > 1 else 0
