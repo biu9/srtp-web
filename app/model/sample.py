@@ -23,17 +23,21 @@ def parse_trace(raw):
     return feature
 
 def judge_mouse_trace(trace, model):
-    dtest = xgb.DMatrix(parse_trace(trace))
-    # calculate the prediction
-    pred = model.predict(dtest)
-    # convert the raw prediction to 0, 1 label
-    pred[pred >= 0.5] = 1
-    pred[pred <  0.5] = 0
-    if pred[0] == 0: print('fail')
-    else: print('pass')
+    try:
+        dtest = xgb.DMatrix(parse_trace(trace))
+        # calculate the prediction
+        pred = model.predict(dtest)
+        # convert the raw prediction to 0, 1 label
+        pred[pred >= 0.5] = 1
+        pred[pred <  0.5] = 0
+        if pred[0] == 0: print('fail')
+        else: print('pass')
+    except Exception as e:
+        print(e)
 
 
 # load pretrained xgboost model
-loaded_model = pickle.load(open("./app/model/pima.pickle.dat", "rb"))
+# loaded_model = pickle.load(open("./app/model/pima.pickle.dat", "rb"))
+loaded_model = pickle.load(open("./app/model/model.pkl", "rb"))
 # parse the trace and predict
 judge_mouse_trace(sys.argv[1], model=loaded_model)

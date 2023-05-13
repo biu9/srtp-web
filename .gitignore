@@ -43,3 +43,6 @@ __pycache__/
 generateVoiceAndImage/TTS/conf
 
 generateVoiceAndImage/TTS/*.wav
+
+# plugin
+/.history/
