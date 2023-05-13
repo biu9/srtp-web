@@ -235,14 +235,21 @@ class Captcha(object):
     def save(self, fp):
         lens = self._captcha.split()
         path = re.findall("(.+/).+", fp)[0]
-        print('save path: ', path)
-        print('os.path.exists(path) ', os.path.exists(path))
         if os.path.exists(path) is False:
-            print('path do not exist, create path: ', path)
             os.makedirs(path)
 
         with open(fp.replace('.png', '.json'), 'w', encoding='utf-8') as file:
-            json.dump(self.positions, file, ensure_ascii=False, indent=4)
+            temp = {
+                "answer": [
+                    {
+                        "x": self.positions[self._text[i]]['x'],
+                        "y": self.positions[self._text[i]]['y'],
+                    }
+                    for i in range(self._num)
+                ]
+            }
+            # json.dump(self.positions, file, ensure_ascii=False, indent=4)
+            json.dump(temp, file, ensure_ascii=False, indent=4)
 
         if fp.lower().endswith("jpg") and len(lens) == 4:
             r, g, b, a = lens
