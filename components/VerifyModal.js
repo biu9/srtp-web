@@ -65,7 +65,7 @@ const VerifyModal = ({ ifOpen, setModalOpen, setPass }) => {
   const [randomIndex, setRandomIndex] = useState(null);
   //const IMG_URL = `/lib/images/${randomIndex}.png`;
   //const WAV_URL = `/lib/wavs/${randomIndex}.wav`;
-  const IMG_URL = `/output/char_output/${randomIndex}.png`;
+  const IMG_URL = `/output/overlay_output/${randomIndex}.png`;
   const WAV_URL = `/output/voice_output/${randomIndex}.wav`;
 
   const router = useRouter();
